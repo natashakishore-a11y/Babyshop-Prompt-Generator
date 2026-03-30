@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Babyshop Engine — Prompt Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+
+<!-- Masthead -->
+<header class="masthead">
+  <div class="masthead-logo">
+    <span class="wordmark">Babyshop Engine</span>
+    <span class="badge">Studio</span>
+  </div>
+  <nav>
+    <ul class="nav-tabs" id="navTabs">
+      <li><button class="active" data-tab="generator">Generator</button></li>
+      <li><button data-tab="resources">Resources</button></li>
+      <li><button data-tab="import">Import</button></li>
+    </ul>
+  </nav>
+  <div class="meta-pill" id="metaText"></div>
+</header>
+
+<!-- Shell -->
+<main class="shell">
+
+<!-- ═══════════════════ GENERATOR TAB ═══════════════════ -->
+<div class="tab-pane active" id="tab-generator">
+  <div class="section-header">
+    <h1 class="section-title">Prompt Generator</h1>
+    <p class="section-desc">Select gender, age, category and source prompt. Choose dimensions to randomise (minimum 1 selection per dimension) and generate 10 camera-ready prompts.</p>
+  </div>
+
+  <div class="generator-layout">
+    <!-- Control Panel -->
+    <aside class="control-panel">
+
+      <!-- Context -->
+      <div class="panel-section">
+        <div class="panel-section-title">Context</div>
+        <div class="field">
+          <label>Gender</label>
+          <select id="genderSelect"></select>
+        </div>
+        <div class="field">
+          <label>Age Bucket</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" data-age="Younger" id="ageYounger">Younger</button>
+            <button class="toggle-btn" data-age="Older" id="ageOlder">Older</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Category</label>
+          <select id="categorySelect"></select>
+        </div>
+        <div class="field">
+          <label>Source Prompt</label>
+          <select id="sourcePromptSelect"></select>
+        </div>
+      </div>
+
+      <!-- Mode -->
+      <div class="panel-section">
+        <div class="panel-section-title">Generation Mode</div>
+        <div class="toggle-group" style="margin-bottom:10px">
+          <button class="toggle-btn active" id="modeRandom" data-mode="random">Randomizer On</button>
+          <button class="toggle-btn" id="modeOriginal" data-mode="original">Original Only</button>
+        </div>
+        <p class="mode-note" id="modeNoteText">Randomizer mode generates fresh 10-prompt sets every click.</p>
+      </div>
+
+      <!-- Expression & Micro -->
+      <div class="panel-section" id="expressionSection">
+        <div class="panel-section-title">Expression &amp; Micro Variation</div>
+        <div class="field">
+          <label>Expression Mode</label>
+          <select id="expressionModeSelect">
+            <option value="Balanced">Balanced</option>
+            <option value="Playful Heavy">Playful-heavy</option>
+            <option value="Calm Heavy">Calm-heavy</option>
+            <option value="Confident Heavy">Confident-heavy</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Micro Variation</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" data-micro="On" id="microOn">On</button>
+            <button class="toggle-btn" data-micro="Off" id="microOff">Off</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Randomise Dimensions -->
+      <div class="panel-section" id="randomizerSection">
+        <div class="panel-section-title">Randomise Dimensions <span style="font-weight:400;color:var(--muted)">(min 1 each)</span></div>
+
+        <!-- Model -->
+        <div class="field">
+          <label>Model</label>
+          <div class="multi-select-wrap" id="wrap-model">
+            <button class="multi-select-trigger" id="trigger-model" type="button">
+              <span class="count-badge" id="count-model">0</span>
+              <span class="trigger-label" id="label-model">Select models…</span>
+              <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <div class="multi-dropdown" id="dropdown-model">
+              <div class="multi-dropdown-search"><input type="text" placeholder="Search…" id="search-model"></div>
+              <div class="multi-dropdown-actions">
+                <button type="button" onclick="selectAll('model')">All</button>
+                <button type="button" onclick="clearAll('model')">None</button>
+              </div>
+              <div class="multi-dropdown-list" id="list-model"></div>
+            </div>
+          </div>
+          <div class="min-note" id="note-model"></div>
+        </div>
+
+        <!-- Hair -->
+        <div class="field">
+          <label>Hair</label>
+          <div class="multi-select-wrap" id="wrap-hair">
+            <button class="multi-select-trigger" id="trigger-hair" type="button">
+              <span class="count-badge" id="count-hair">0</span>
+              <span class="trigger-label" id="label-hair">Select hair styles…</span>
+              <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <div class="multi-dropdown" id="dropdown-hair">
+              <div class="multi-dropdown-search"><input type="text" placeholder="Search…" id="search-hair"></div>
+              <div class="multi-dropdown-actions">
+                <button type="button" onclick="selectAll('hair')">All</button>
+                <button type="button" onclick="clearAll('hair')">None</button>
+              </div>
+              <div class="multi-dropdown-list" id="list-hair"></div>
+            </div>
+          </div>
+          <div class="min-note" id="note-hair"></div>
+        </div>
+
+        <!-- Pose -->
+        <div class="field">
+          <label>Pose</label>
+          <div class="multi-select-wrap" id="wrap-pose">
+            <button class="multi-select-trigger" id="trigger-pose" type="button">
+              <span class="count-badge" id="count-pose">0</span>
+              <span class="trigger-label" id="label-pose">Select poses…</span>
+              <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <div class="multi-dropdown" id="dropdown-pose">
+              <div class="multi-dropdown-search"><input type="text" placeholder="Search…" id="search-pose"></div>
+              <div class="multi-dropdown-actions">
+                <button type="button" onclick="selectAll('pose')">All</button>
+                <button type="button" onclick="clearAll('pose')">None</button>
+              </div>
+              <div class="multi-dropdown-list" id="list-pose"></div>
+            </div>
+          </div>
+          <div class="min-note" id="note-pose"></div>
+        </div>
+
+        <!-- Environment -->
+        <div class="field">
+          <label>Environment</label>
+          <div class="multi-select-wrap" id="wrap-env">
+            <button class="multi-select-trigger" id="trigger-env" type="button">
+              <span class="count-badge" id="count-env">0</span>
+              <span class="trigger-label" id="label-env">Select environments…</span>
+              <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <div class="multi-dropdown" id="dropdown-env">
+              <div class="multi-dropdown-search"><input type="text" placeholder="Search…" id="search-env"></div>
+              <div class="multi-dropdown-actions">
+                <button type="button" onclick="selectAll('env')">All</button>
+                <button type="button" onclick="clearAll('env')">None</button>
+              </div>
+              <div class="multi-dropdown-list" id="list-env"></div>
+            </div>
+          </div>
+          <div class="min-note" id="note-env"></div>
+        </div>
+
+        <!-- Custom Environment Override -->
+        <div class="field">
+          <label>Custom Environment Override</label>
+          <textarea id="customEnvOverride" placeholder="Paste full environment description here to override the selected environment pack…"></textarea>
+        </div>
+      </div>
+
+      <!-- Generate -->
+      <div class="generate-btn-wrap">
+        <button class="btn btn-primary" id="generateBtn">Generate 10 Prompts</button>
+      </div>
+
+    </aside>
+
+    <!-- Results -->
+    <div class="results-area">
+      <div id="resultsHeader" class="results-header" style="display:none">
+        <span class="results-count" id="resultsCount"></span>
+        <div class="results-actions">
+          <button class="btn btn-soft" id="copyAllBtn">Copy All</button>
+          <button class="btn btn-soft" id="downloadBtn">Download CSV</button>
+        </div>
+      </div>
+      <div class="cards-grid" id="cardsGrid"></div>
+      <div class="empty-state" id="emptyState">
+        <h3>Ready to generate</h3>
+        <p>Select your filters and dimensions above, then click Generate.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ RESOURCES TAB ═══════════════════ -->
+<div class="tab-pane" id="tab-resources">
+  <div class="section-header">
+    <h1 class="section-title">Manage Library</h1>
+    <p class="section-desc">Enable, lock, prioritise, edit, delete and add new entries. Changes reflect immediately in the Generator.</p>
+  </div>
+
+  <div class="lib-toolbar">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+      <div class="field" style="min-width:160px;margin-bottom:0">
+        <label>Resource Type</label>
+        <select id="resourceTypeSelect">
+          <option value="basePrompts">Base Prompts</option>
+          <option value="models">Models</option>
+          <option value="hair">Hair</option>
+          <option value="poses">Poses</option>
+          <option value="environments">Environments</option>
+        </select>
+      </div>
+      <div class="field" style="min-width:130px;margin-bottom:0">
+        <label>Filter Gender</label>
+        <select id="resourceGenderFilter">
+          <option value="All">All Genders</option>
+          <option value="Female">Female / Girl</option>
+          <option value="Male">Male / Boy</option>
+        </select>
+      </div>
+      <div class="field" style="min-width:120px;margin-bottom:0">
+        <label>Filter Age</label>
+        <select id="resourceAgeFilter">
+          <option value="All">All Ages</option>
+          <option value="Younger">Younger</option>
+          <option value="Older">Older</option>
+        </select>
+      </div>
+      <div class="field" style="min-width:200px;margin-bottom:0">
+        <label>Search</label>
+        <input type="text" id="resourceSearch" placeholder="Search identifier or prompt…">
+      </div>
+      <div class="field" style="margin-bottom:0;display:flex;align-items:center;gap:6px;padding-top:18px">
+        <input type="checkbox" id="showActiveOnly" style="width:14px;height:14px;accent-color:var(--ink)">
+        <label for="showActiveOnly" style="text-transform:none;font-size:12px;font-weight:500;color:var(--ink);cursor:pointer">Show active only</label>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="addEntryBtn" type="button">+ Add new entry</button>
+  </div>
+
+  <div class="lib-count" id="libCount"></div>
+  <div style="margin-top:10px" class="lib-table-wrap">
+    <div class="lib-scroll">
+      <div id="resourcesContainer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ IMPORT TAB ═══════════════════ -->
+<div class="tab-pane" id="tab-import">
+  <div class="section-header">
+    <h1 class="section-title">Import Resources</h1>
+    <p class="section-desc">Upload or paste CSV/TSV data to replace or extend any resource type. Imported rows appear instantly inside Resources and the Generator.</p>
+  </div>
+  <div class="import-grid">
+    <div class="import-card">
+      <div class="import-card-title">Sample CSV Template</div>
+      <div class="import-card-desc" id="templateDesc">Use this structure for the selected resource type.</div>
+      <div class="field">
+        <label>Template Type</label>
+        <select id="templateTypeSelect">
+          <option value="basePrompts">Base Prompts</option>
+          <option value="models">Models</option>
+          <option value="hair">Hair</option>
+          <option value="poses">Pose / Behavior</option>
+          <option value="environments">Environment Packs</option>
+        </select>
+      </div>
+      <div class="field">
+        <textarea id="templateBox" readonly style="min-height:240px;font-family:var(--font-mono);font-size:11px"></textarea>
+      </div>
+      <div class="import-actions">
+        <button class="btn btn-soft" id="copyTemplateBtn">Copy Template</button>
+        <button class="btn btn-soft" id="downloadTemplateBtn">Download CSV</button>
+      </div>
+    </div>
+    <div class="import-card">
+      <div class="import-card-title">Upload or Paste Data</div>
+      <div class="import-card-desc">Choose what to import, then upload a file or paste rows. Append adds to the current library, Replace overwrites that resource type only.</div>
+      <div class="modal-row" style="margin-bottom:12px">
+        <div class="field"><label>Target Resource Type</label>
+          <select id="importTypeSelect">
+            <option value="basePrompts">Base Prompts</option>
+            <option value="models">Models</option>
+            <option value="hair">Hair</option>
+            <option value="poses">Pose / Behavior</option>
+            <option value="environments">Environment Packs</option>
+          </select>
+        </div>
+        <div class="field"><label>Import Mode</label>
+          <select id="importModeSelect">
+            <option value="replace">Replace</option>
+            <option value="append">Append</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Upload File</label><input type="file" accept=".csv,.tsv,.txt" id="importFileInput"></div>
+      <div class="field"><label>Or Paste CSV / TSV</label><textarea id="rawImportBox" style="min-height:180px;font-family:var(--font-mono);font-size:11px" placeholder="Paste rows here..."></textarea></div>
+      <div class="import-actions">
+        <button class="btn btn-primary" id="importBtn">Import Data</button>
+        <button class="btn btn-soft" id="resetImportedBtn">Reset Selected Type to Built-in</button>
+        <button class="btn btn-soft" id="exportBtn">Export Selected Type CSV</button>
+      </div>
+      <div class="status-msg" id="importStatus"></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ═══════════════════ ADD ENTRY MODAL ═══════════════════ -->
+<div class="modal-backdrop" id="entryModal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span id="modalTitle">Add New Entry</span>
+      <button class="modal-close" id="modalClose">×</button>
+    </div>
+    <div class="modal-fields">
+      <div class="field"><label>Resource Type</label>
+        <select id="modalType">
+          <option value="basePrompts">Base Prompts</option>
+          <option value="models">Models</option>
+          <option value="hair">Hair</option>
+          <option value="poses">Poses</option>
+          <option value="environments">Environments</option>
+        </select>
+      </div>
+      <div class="modal-row">
+        <div class="field"><label>Identifier / Name</label><input type="text" id="modalIdentifier" placeholder="e.g. Girl | Younger | Editorial Soft"></div>
+        <div class="field"><label>Category (base prompts)</label><input type="text" id="modalCategory" placeholder="e.g. Co-ords, Dresses…"></div>
+      </div>
+      <div class="modal-row">
+        <div class="field"><label>Gender / Family</label>
+          <select id="modalGender">
+            <option value="Baby Girl">Baby Girl</option>
+            <option value="Baby Boy">Baby Boy</option>
+            <option value="Girl">Girl</option>
+            <option value="Boy">Boy</option>
+            <option value="Female">Female (hair/model)</option>
+            <option value="Male">Male (hair/model)</option>
+            <option value="Any">Any</option>
+          </select>
+        </div>
+        <div class="field"><label>Age Bucket</label>
+          <select id="modalAge">
+            <option value="Younger">Younger</option>
+            <option value="Older">Older</option>
+            <option value="Any">Any</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="field"><label>Priority</label>
+          <select id="modalPriority">
+            <option value="Normal">Normal</option>
+            <option value="High">High</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div class="field" style="display:flex;align-items:center;gap:8px;padding-top:20px">
+          <input type="checkbox" id="modalEnabled" checked style="width:15px;height:15px;accent-color:var(--ink)">
+          <label for="modalEnabled" style="font-size:13px;font-weight:500;text-transform:none;cursor:pointer">Enabled</label>
+        </div>
+      </div>
+      <div class="field"><label>Prompt / Full Text</label>
+        <textarea id="modalPrompt" style="min-height:160px;font-family:var(--font-mono);font-size:11.5px" placeholder="Paste the full prompt or description here…"></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-soft" id="modalCancel" type="button">Cancel</button>
+      <button class="btn btn-primary" id="modalSave" type="button">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<script src="./assets/js/app.js"></script>
+</body>
+</html>
